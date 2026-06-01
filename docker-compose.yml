@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  back-ventas:
+    build:
+      context: ./Springboot-API-REST
+      dockerfile: dockerfile
+    container_name: tienda-backend-ventas
+    ports:
+      - "8080:8080"  # Mapea el puerto de tu aplicación de Ventas
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
