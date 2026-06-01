@@ -31,3 +31,23 @@ jobs:
       run: |
         docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./Springboot-API-REST/dockerfile ./Springboot-API-REST
         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+    # ========================================================
+    # DESPLIEGUE SEGURO EN SUBRED PRIVADA USANDO AWS SSM (SIN LLAVES)
+    # ========================================================
+    - name: Deploy to Private EC2 via AWS SSM
+      uses: peterkimzz/aws-ssm-send-command@v1.1.1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-region: ${{ secrets.AWS_REGION }}
+        instance-ids: ${{ secrets.EC2_HOST }}  # El ID de tu instancia de Ventas
+        comment: "Desplegando actualizacion de Backend Ventas sin llaves"
+        command: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+          mkdir -p ~/app-ventas && cd ~/app-ventas
+          docker pull ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPO_URL_BACKVENTAS }}:v1
+          docker stop tienda-backend-ventas || true
+          docker rm tienda-backend-ventas || true
+          docker run -d -p 8080:8080 --name tienda-backend-ventas ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPO_URL_BACKVENTAS }}:v1

@@ -7,6 +7,13 @@ services:
       dockerfile: dockerfile
     container_name: tienda-backend-ventas
     ports:
-      - "8080:8080"  # Mapea el puerto de tu aplicación de Ventas
+      - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+    volumes:
+      # Mapea un volumen con nombre a la ruta interna de datos/logs de la app
+      - vol_data_ventas:/app/data
+
+volumes:
+  # Declaración del Named Volume gestionado por Docker
+  vol_data_ventas:
