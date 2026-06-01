@@ -33,7 +33,7 @@ jobs:
         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
     # ========================================================
-    # DESPLIEGUE SEGURO EN SUBRED PRIVADA USANDO AWS CLI NATIVO (SSM)
+    # DESPLIEGUE SEGURO EN SUBRED PRIVADA USANDO AWS CLI NATIVO  (SSM)
     # ========================================================
     - name: Deploy to Private EC2 via AWS CLI SSM
       run: |
